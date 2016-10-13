@@ -22,4 +22,3 @@ if(len(sys.argv)>=3):
 client=mpd.MPDClient()
 print("Connecting to "+mpdHost+" on Port "+str(mpdPort))
 client.connect(mpdHost,mpdPort)
-sleepTimer(client,3,10)
