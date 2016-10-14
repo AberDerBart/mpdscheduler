@@ -5,7 +5,9 @@ import threading
 import time
 
 def sleepTimer(client, timeout, fadeTime=30):
-	def execute(client,fadeTime):
+	"""waits for [timeout] seconds, then fades out for [fadeTime] seconds (asynchronously)"""
+	def fade(client,fadeTime):
+		"""fades for [fadeTime] seconds (synchronously)"""
 		startVol=int(client.status()["volume"])
 		sleepInterval=fadeTime/float(startVol)
 
@@ -21,17 +23,16 @@ def sleepTimer(client, timeout, fadeTime=30):
 		client.setvol(startVol)
 		print("sleepTimer: finished")
 
+		#reset the sleep timer
 		sleepTimer.timer=None
 
-	client = client
-	timeout = timeout
-	fadeTime = fadeTime
-
+	#check for existing sleep timer and stop it if necessary
 	if(sleepTimer.timer!=None):
 		print("SleepTimer: There is a sleepTimer active, stopping it.")
 		sleepTimer.timer.cancel()
 
-	sleepTimer.timer=threading.Timer(timeout,execute,(client,fadeTime))
+	#create a new timer to start fading after [fadeTime] seconds
+	sleepTimer.timer=threading.Timer(timeout,fade,(client,fadeTime))
 	print("SleepTimer: Waiting for "+str(timeout)+"s")
 	sleepTimer.timer.start()
 
