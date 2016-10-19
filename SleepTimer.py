@@ -2,21 +2,16 @@
 
 import mpd
 import threading
-import time
+from Fade import fade
 
 def sleepTimer(client, timeout, fadeTime=30):
 	"""waits for [timeout] seconds, then fades out for [fadeTime] seconds (asynchronously)"""
-	def fade(client,fadeTime):
+	def gotoSleep(client,fadeTime):
 		"""fades for [fadeTime] seconds (synchronously)"""
 		startVol=int(client.status()["volume"])
-		sleepInterval=fadeTime/float(startVol)
+		
+		fade(client,fadeTime,startVol,0)
 
-		print("sleepTimer: Fading for "+str(fadeTime)+"s from volume at "+str(startVol)+"%")
-
-		for vol in range(startVol, 0, -1):
-			print("sleepTimer: Setting volume to "+str(vol)+"%")
-			client.setvol(vol)
-			time.sleep(sleepInterval)
 		print("sleepTimer: Stopping playback")
 		client.stop()
 		print("sleepTimer: Restoring volume to "+str(startVol)+"%")
@@ -32,7 +27,7 @@ def sleepTimer(client, timeout, fadeTime=30):
 		sleepTimer.timer.cancel()
 
 	#create a new timer to start fading after [fadeTime] seconds
-	sleepTimer.timer=threading.Timer(timeout,fade,(client,fadeTime))
+	sleepTimer.timer=threading.Timer(timeout,gotoSleep,(client,fadeTime))
 	print("SleepTimer: Waiting for "+str(timeout)+"s")
 	sleepTimer.timer.start()
 
