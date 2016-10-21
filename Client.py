@@ -21,7 +21,7 @@ client=mpd.MPDClient()
 print("Connecting to "+mpdHost+" on Port "+str(mpdPort))
 client.connect(mpdHost,mpdPort)
 
-client.subscribe("schedule")
+client.subscribe("sleep")
 
 quit=False
 
@@ -32,8 +32,4 @@ while(not quit):
 	messages=client.readmessages()
 
 	for msg in messages:
-		if(msg["channel"]=="schedule"):
-			Parser.parse(client,scheduler,msg["message"])
-		else:
-			print("Could not parse "+msg["message"])
-
+		Parser.parse(client,scheduler,msg)

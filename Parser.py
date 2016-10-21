@@ -1,11 +1,17 @@
 #!/bin/python
-import Sleep
+from Sleep import gotoSleep
+from Scheduler import Job
+import time
 
 def parse(client, scheduler, msg):
 	"""parses and executes the command given in msg"""
-	params=msg.split(" ")
-	command=params[0]
+	command=msg["channel"]
+	args=msg["message"]
 
 	# activate sleep timer
 	if(command=="sleep"):
-		if(len(params)==2):
+		if(args.isdigit()):
+			sleepTime=int(args)*60+time.time()
+			scheduler.schedule(sleepTime,Job(gotoSleep,(client,60),"Go to sleep"))
+		else:
+			print("Error parsing argument "+args)

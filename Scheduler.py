@@ -17,6 +17,7 @@ class Scheduler:
 		self.queue=[]
 	def schedule(self,startTime,job):
 		"""Attaches [job] to the job queue"""
+		print("Scheduling \""+job.desc+"\".")
 		self.queue.append((startTime,job))
 		# sort queue by [startTime]
 		self.queue.sort()
