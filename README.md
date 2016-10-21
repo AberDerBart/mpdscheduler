@@ -14,6 +14,8 @@ Start the program by typing
 
     $ python Client.py [mpdHost [mpdPort]]
 
+If mpdPort is not given, fictional-potato will default to 6600. If mpdHost is not given, fictional-potato will read the $MPD_HOST environment variable or default to localhost, if $MPD_HOST is not set.
+
 Then send commands via mpd channels (for example using mpc). Each feature is controlled by an individual channel.
 The syntax is as follows:
 
