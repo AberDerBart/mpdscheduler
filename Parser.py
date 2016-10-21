@@ -22,4 +22,5 @@ class Parser:
 				print("Error parsing argument "+args)
 		# add an alarm
 		if(command=="alarm"):
+
 			print("alarm not available yet")

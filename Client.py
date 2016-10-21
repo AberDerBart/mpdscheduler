@@ -23,6 +23,7 @@ print("Connecting to "+mpdHost+" on Port "+str(mpdPort))
 client.connect(mpdHost,mpdPort)
 
 client.subscribe("sleep")
+client.subscribe("alarm")
 
 parser=Parser.Parser(mpdHost,mpdPort)
 
