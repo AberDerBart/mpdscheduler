@@ -2,6 +2,7 @@
 from Sleep import gotoSleep
 import Scheduler
 import time
+import parse
 
 class Parser:
 	def __init__(self,mpdHost,mpdPort):
@@ -20,3 +21,18 @@ class Parser:
 				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(60,),"Go to sleep"))
 			else:
 				print("Error parsing argument "+args)
+	def parseTime(self,string):
+		# check, if a time string was given
+		result=parse.parse("{:tt}",string)
+
+		if(result):
+			# TODO implement returning the next datetime with result[0] as time (either today or tomorrow)
+		
+		# check, if a date string was given
+		result=parse.parse("{:tg}",string)
+
+		if(result):
+			return result[0]
+
+		# no timestamp could be detected,
+		return None
