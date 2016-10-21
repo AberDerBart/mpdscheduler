@@ -16,6 +16,7 @@ class Job:
 
 class Scheduler:
 	"""Schedules jobs in a queue"""
+
 	def __init__(self,mpdHost,mpdPort):
 		self.timer=None
 		self.queue=[]
@@ -27,6 +28,9 @@ class Scheduler:
 	def schedule(self,startTime,job):
 		"""Attaches [job] to the job queue"""
 		print("Scheduling \""+job.desc+"\".")
+
+		queueLock.acquire()
+
 		self.queue.append((startTime,job))
 		# sort queue by [startTime]
 		self.queue.sort()
@@ -35,6 +39,8 @@ class Scheduler:
 		if(startTime == self.queue[0][0]):
 			# (re)start the timer
 			self.initTimer()
+
+		queueLock.release()
 
 	def initTimer(self):
 		"""(re)starts the timer for queue processing"""
@@ -60,6 +66,9 @@ class Scheduler:
 	def processQueue(self):
 		"""processes all due jobs in the queue"""
 		# get the next job and execution time
+
+		queueLock.acquire()
+
 		if(self.queue):
 			nextTime,nextJob=self.queue[0]
 		else:
@@ -70,7 +79,11 @@ class Scheduler:
 			# remove the job from the queue
 			self.queue.pop(0)
 
+			queueLock.release()
+
 			nextJob.execute(self.client)
+
+			queueLock.acquire()
 
 			# get the next job and execution time
 			if(self.queue):
@@ -80,3 +93,5 @@ class Scheduler:
 			
 		# reactivate the timer
 		self.initTimer()
+
+		queueLock.release()
