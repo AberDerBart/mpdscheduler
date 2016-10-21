@@ -21,7 +21,13 @@ class Parser:
 				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(60,),"Go to sleep"))
 			else:
 				print("Error parsing argument "+args)
+		# add an alarm
+		if(command=="alarm"):
+
+			print("alarm not available yet")
+
 	def parseTime(self,string):
+		"""parses a timestamp given in [string] in the format hh:mm[:ss] or dd/MM/YYYY[ hh:mm[:ss]] or +m and returns it as datetime.datetime or None on failure"""
 		# check, if a time string was given
 		result=parse.parse("{:tt}",string)
 
