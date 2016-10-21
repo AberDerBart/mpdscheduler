@@ -20,3 +20,6 @@ class Parser:
 				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(60,),"Go to sleep"))
 			else:
 				print("Error parsing argument "+args)
+		# add an alarm
+		if(command=="alarm"):
+			print("alarm not available yet")
