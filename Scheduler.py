@@ -40,6 +40,9 @@ class Scheduler:
 		else:
 			# disable the timer
 			self.timer=None
+	def stop(self):
+		if(self.timer):
+			self.timer.cancel()
 	def processQueue(self):
 		"""processes all due jobs in the queue"""
 		# get the next job and execution time

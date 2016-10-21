@@ -5,6 +5,7 @@ import mpd
 import sys
 import Parser
 import Scheduler
+import signal
 
 mpdHost="localhost"
 mpdPort=6600
@@ -26,6 +27,19 @@ client.subscribe("sleep")
 parser=Parser.Parser(mpdHost,mpdPort)
 
 quit=False
+
+def signalHandler(signum, frame):
+	print("Caught some kill signal, closing...")
+	parser.exit()
+	client.close()
+	print("Closing")
+	sys.exit()
+
+signal.signal(signal.SIGABRT,signalHandler)
+signal.signal(signal.SIGQUIT,signalHandler)
+signal.signal(signal.SIGINT,signalHandler)
+signal.signal(signal.SIGTERM,signalHandler)
+
 
 while(not quit):
 	client.idle("message")

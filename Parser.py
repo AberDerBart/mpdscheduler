@@ -10,6 +10,9 @@ class Parser:
 		print("Creating control connection")
 		self.client=mpd.MPDClient()
 		self.client.connect(mpdHost,mpdPort)
+	def exit(self):
+		self.scheduler.stop()
+		self.client.close()
 	def parse(self,msg):
 		"""parses and executes the command given in msg"""
 		command=msg["channel"]
