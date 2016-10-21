@@ -18,7 +18,7 @@ class Parser:
 		if(command=="sleep"):
 			if(args.isdigit()):
 				sleepTime=int(args)*60+time.time()
-				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(60,),"Go to sleep"))
+				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(20,),"Go to sleep"))
 			else:
 				print("Error parsing argument "+args)
 		# add an alarm

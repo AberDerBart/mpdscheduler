@@ -20,4 +20,4 @@ def fade(client,fadeTime,startVol,endVol):
 		client.setvol(vol)
 		time.sleep(sleepInterval)
 	print("Setting volume to "+str(endVol)+"%")
-	client.setVol(endVol)
+	client.setvol(endVol)

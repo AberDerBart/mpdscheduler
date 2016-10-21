@@ -29,7 +29,7 @@ class Scheduler:
 		"""Attaches [job] to the job queue"""
 		print("Scheduling \""+job.desc+"\".")
 
-		queueLock.acquire()
+		self.queueLock.acquire()
 
 		self.queue.append((startTime,job))
 		# sort queue by [startTime]
@@ -40,7 +40,7 @@ class Scheduler:
 			# (re)start the timer
 			self.initTimer()
 
-		queueLock.release()
+		self.queueLock.release()
 
 	def initTimer(self):
 		"""(re)starts the timer for queue processing"""
@@ -67,7 +67,7 @@ class Scheduler:
 		"""processes all due jobs in the queue"""
 		# get the next job and execution time
 
-		queueLock.acquire()
+		self.queueLock.acquire()
 
 		if(self.queue):
 			nextTime,nextJob=self.queue[0]
@@ -79,11 +79,11 @@ class Scheduler:
 			# remove the job from the queue
 			self.queue.pop(0)
 
-			queueLock.release()
+			self.queueLock.release()
 
 			nextJob.execute(self.client)
 
-			queueLock.acquire()
+			self.queueLock.acquire()
 
 			# get the next job and execution time
 			if(self.queue):
@@ -94,4 +94,4 @@ class Scheduler:
 		# reactivate the timer
 		self.initTimer()
 
-		queueLock.release()
+		self.queueLock.release()
