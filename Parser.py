@@ -32,8 +32,14 @@ class Parser:
 		result=parse.parse("{:tt}",string)
 
 		if(result):
-			# TODO implement returning the next datetime with result[0] as time (either today or tomorrow)
+			retn=datetime.datetime.combine(datetime.date.today(),result[0])
+
+			# if the time already passed, increment the day
+			if(retn < datetime.datetime.now()):
+				retn += datetime.timedelta(days=1)
 		
+			return retn
+
 		# check, if a date string was given
 		result=parse.parse("{:tg}",string)
 
