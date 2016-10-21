@@ -7,6 +7,7 @@ import mpd
 class Parser:
 	def __init__(self,mpdHost,mpdPort):
 		self.scheduler=Scheduler.Scheduler()
+		print("Creating control connection")
 		self.client=mpd.MPDClient()
 		self.client.connect(mpdHost,mpdPort)
 	def parse(self,msg):
