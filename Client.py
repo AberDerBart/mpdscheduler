@@ -23,13 +23,13 @@ client.connect(mpdHost,mpdPort)
 
 client.subscribe("sleep")
 
-quit=False
+parser=Parser.Parser(mpdHost,mpdPort)
 
-scheduler=Scheduler.Scheduler()
+quit=False
 
 while(not quit):
 	client.idle("message")
 	messages=client.readmessages()
 
 	for msg in messages:
-		Parser.parse(client,scheduler,msg)
+		parser.parse(msg)
