@@ -2,17 +2,12 @@
 from Sleep import gotoSleep
 import Scheduler
 import time
-import mpd
 
 class Parser:
 	def __init__(self,mpdHost,mpdPort):
-		self.scheduler=Scheduler.Scheduler()
-		print("Creating control connection")
-		self.client=mpd.MPDClient()
-		self.client.connect(mpdHost,mpdPort)
+		self.scheduler=Scheduler.Scheduler(mpdHost,mpdPort)
 	def exit(self):
 		self.scheduler.stop()
-		self.client.close()
 	def parse(self,msg):
 		"""parses and executes the command given in msg"""
 		command=msg["channel"]
@@ -22,6 +17,6 @@ class Parser:
 		if(command=="sleep"):
 			if(args.isdigit()):
 				sleepTime=int(args)*60+time.time()
-				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(self.client,60),"Go to sleep"))
+				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(60,),"Go to sleep"))
 			else:
 				print("Error parsing argument "+args)

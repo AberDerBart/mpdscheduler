@@ -1,20 +1,29 @@
 import time
 import threading
+import mpd
 
 class Job:
 	"""Representation of a scheduled job"""
+
 	def __init__(self,function,arguments,description):
 		self.func=function
 		self.args=arguments
 		self.desc=description
-	def execute(self):
+
+	def execute(self,client):
 		"""processes the job"""
-		self.func(*self.args)
+		self.func(client,*self.args)
+
 class Scheduler:
 	"""Schedules jobs in a queue"""
-	def __init__(self):
+	def __init__(self,mpdHost,mpdPort):
 		self.timer=None
 		self.queue=[]
+		self.queueLock=threading.Lock()
+
+		self.client=mpd.MPDClient()
+		self.client.connect(mpdHost,mpdPort)
+
 	def schedule(self,startTime,job):
 		"""Attaches [job] to the job queue"""
 		print("Scheduling \""+job.desc+"\".")
@@ -26,6 +35,7 @@ class Scheduler:
 		if(startTime == self.queue[0][0]):
 			# (re)start the timer
 			self.initTimer()
+
 	def initTimer(self):
 		"""(re)starts the timer for queue processing"""
 		# stop running timer
@@ -40,9 +50,13 @@ class Scheduler:
 		else:
 			# disable the timer
 			self.timer=None
+
 	def stop(self):
+		"""stops the scheduler"""
 		if(self.timer):
 			self.timer.cancel()
+		self.client.close()
+
 	def processQueue(self):
 		"""processes all due jobs in the queue"""
 		# get the next job and execution time
@@ -56,7 +70,7 @@ class Scheduler:
 			# remove the job from the queue
 			self.queue.pop(0)
 
-			nextJob.execute()
+			nextJob.execute(self.client)
 
 			# get the next job and execution time
 			if(self.queue):
