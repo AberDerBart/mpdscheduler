@@ -1,50 +1,30 @@
 #!/usr/bin/python
 
-import os
+import threading
 import mpd
-import sys
 import Parser
-import Scheduler
-import signal
 
-mpdHost="localhost"
-mpdPort=6600
+class Interface:
+	def __init__(self,mpdHost,mpdPort):		
+		self.host=mpdHost
+		self.port=mpdPort
+		# connect
+		self.client=mpd.MPDClient()
+		print("Connecting to "+mpdHost+" on Port "+str(mpdPort))
+		self.client.connect(mpdHost,mpdPort)
 
-if(len(sys.argv)>=2):
-	mpdHost=sys.argv[1]
-elif(os.environ.get("MPD_HOST")!=None):
-	mpdHost=os.environ.get("MPD_HOST")
+		# subscribe channels
+		self.client.subscribe("sleep")
+		self.client.subscribe("alarm")
 
-if(len(sys.argv)>=3):
-	mpdPort=sys.argv[2]
+		# initialize parser
+		self.parser=Parser.Parser(self)
 
-client=mpd.MPDClient()
-print("Connecting to "+mpdHost+" on Port "+str(mpdPort))
-client.connect(mpdHost,mpdPort)
+		self.quit=False
+	def start(self):
+		while(not self.quit):
+			self.client.idle()
+			messages=self.client.readmessages()
 
-client.subscribe("sleep")
-client.subscribe("alarm")
-
-parser=Parser.Parser(mpdHost,mpdPort)
-
-quit=False
-
-def signalHandler(signum, frame):
-	print("Caught some kill signal, closing...")
-	parser.exit()
-	client.close()
-	print("Closing")
-	sys.exit()
-
-signal.signal(signal.SIGABRT,signalHandler)
-signal.signal(signal.SIGQUIT,signalHandler)
-signal.signal(signal.SIGINT,signalHandler)
-signal.signal(signal.SIGTERM,signalHandler)
-
-
-while(not quit):
-	client.idle("message")
-	messages=client.readmessages()
-
-	for msg in messages:
-		parser.parse(msg)
+			for msg in messages:
+				self.parser.parse(msg)

@@ -10,20 +10,17 @@ class Job:
 		self.args=arguments
 		self.desc=description
 
-	def execute(self,client):
+	def execute(self):
 		"""processes the job"""
-		self.func(client,*self.args)
+		self.func(*self.args)
 
 class Scheduler:
 	"""Schedules jobs in a queue"""
 
-	def __init__(self,mpdHost,mpdPort):
+	def __init__(self):
 		self.timer=None
 		self.queue=[]
 		self.queueLock=threading.Lock()
-
-		self.client=mpd.MPDClient()
-		self.client.connect(mpdHost,mpdPort)
 
 	def schedule(self,startTime,job):
 		"""Attaches [job] to the job queue"""
@@ -61,7 +58,6 @@ class Scheduler:
 		"""stops the scheduler"""
 		if(self.timer):
 			self.timer.cancel()
-		self.client.close()
 
 	def processQueue(self):
 		"""processes all due jobs in the queue"""
@@ -81,7 +77,7 @@ class Scheduler:
 
 			self.queueLock.release()
 
-			nextJob.execute(self.client)
+			nextJob.execute()
 
 			self.queueLock.acquire()
 

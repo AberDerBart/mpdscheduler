@@ -12,7 +12,7 @@ Thanks to GitHub for the nice name proposal.
 
 Start the program by typing
 
-    $ python Client.py [mpdHost [mpdPort]]
+    $ python main.py [mpdHost [mpdPort]]
 
 If mpdPort is not given, fictional-potato will default to 6600. If mpdHost is not given, fictional-potato will read the $MPD_HOST environment variable or default to localhost, if $MPD_HOST is not set.
 

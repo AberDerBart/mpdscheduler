@@ -5,8 +5,9 @@ import time
 import parse
 
 class Parser:
-	def __init__(self,mpdHost,mpdPort):
-		self.scheduler=Scheduler.Scheduler(mpdHost,mpdPort)
+	def __init__(self,interface):
+		self.scheduler=Scheduler.Scheduler()
+		self.interface=interface
 	def exit(self):
 		self.scheduler.stop()
 	def parse(self,msg):
@@ -18,7 +19,7 @@ class Parser:
 		if(command=="sleep"):
 			if(args.isdigit()):
 				sleepTime=int(args)*60+time.time()
-				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(20,),"Go to sleep"))
+				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(self.interface,20),"Go to sleep"))
 			else:
 				print("Error parsing argument "+args)
 		# add an alarm
