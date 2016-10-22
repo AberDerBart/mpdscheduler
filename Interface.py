@@ -16,11 +16,16 @@ class Interface:
 		# subscribe channels
 		self.client.subscribe("sleep")
 		self.client.subscribe("alarm")
+		self.client.subscribe("schedule")
 
 		# initialize parser
 		self.parser=Parser.Parser(self)
 
 		self.quit=False
+	def stop(self):
+		self.quit=True
+		self.parser.stop()
+		self.client.close()
 	def start(self):
 		while(not self.quit):
 			self.client.idle()

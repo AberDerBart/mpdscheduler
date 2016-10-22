@@ -10,7 +10,7 @@ class Parser:
 	def __init__(self,interface):
 		self.scheduler=Scheduler.Scheduler()
 		self.interface=interface
-	def exit(self):
+	def stop(self):
 		self.scheduler.stop()
 	def parse(self,msg):
 		"""parses and executes the command given in msg"""
@@ -34,6 +34,10 @@ class Parser:
 			else:
 				print("Error parsing argument "+args)
 
+		# list scheduled items
+		if(command=="schedule"):
+			if(args=="list"):
+				self.interface.client.sendmessage("schedule",str(self.scheduler))
 
 	def parseTime(self,string):
 		"""parses a timestamp given in [string] in the format hh:mm[:ss] or dd/MM/YYYY[ hh:mm[:ss]] or +m and returns it as datetime.datetime or None on failure"""

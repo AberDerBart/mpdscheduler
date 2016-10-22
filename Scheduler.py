@@ -95,3 +95,16 @@ class Scheduler:
 		self.initTimer()
 
 		self.queueLock.release()
+	
+	def __str__(self):
+		retn="Scheduler queue:"
+		for item in self.queue:
+			schedTime=item[0]
+			job=item[1]
+
+			timestr=str(schedTime.date())+" "
+			timestr+=str(schedTime.time().hour)+":"+str(schedTime.time().minute)
+
+			retn+="\n"+schedTime.strftime("%d/%m/%Y %H:%M")+" "+job.desc
+
+		return retn
