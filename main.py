@@ -2,7 +2,7 @@
 import signal
 import os
 import sys
-import Client
+import Interface
 
 def signalHandler(signum, frame):
 	print("Caught some kill signal, closing...")
@@ -29,6 +29,6 @@ if(len(sys.argv)>=3):
 	mpdPort=sys.argv[2]
 
 # setup the interface
-interface=Client.Interface(mpdHost,mpdPort)
+interface=Interface.Interface(mpdHost,mpdPort)
 
 interface.start()
