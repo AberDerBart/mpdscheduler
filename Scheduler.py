@@ -1,6 +1,7 @@
 import time
 import threading
 import mpd
+import datetime
 
 class Job:
 	"""Representation of a scheduled job"""
@@ -46,7 +47,10 @@ class Scheduler:
 			self.timer.cancel()
 
 		if(self.queue):
-			waitTime=self.queue[0][0]-time.time()
+			# calculate waiting time
+			timeDiff=self.queue[0][0]-datetime.datetime.now()
+			waitTime=timeDiff.total_seconds()
+
 			# start a new timer
 			self.timer=threading.Timer(waitTime,self.processQueue,())
 			self.timer.start()
@@ -71,7 +75,7 @@ class Scheduler:
 			nextTime=None
 
 		# process jobs until there is no due job left
-		while(nextTime and nextTime<=time.time()):
+		while(nextTime and nextTime<=datetime.datetime.now()):
 			# remove the job from the queue
 			self.queue.pop(0)
 

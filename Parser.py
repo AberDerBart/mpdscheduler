@@ -3,6 +3,8 @@ from Sleep import gotoSleep
 import Scheduler
 import time
 import parse
+import datetime
+import Alarm
 
 class Parser:
 	def __init__(self,interface):
@@ -17,15 +19,21 @@ class Parser:
 
 		# activate sleep timer
 		if(command=="sleep"):
-			if(args.isdigit()):
-				sleepTime=int(args)*60+time.time()
-				self.scheduler.schedule(sleepTime,Scheduler.Job(gotoSleep,(self.interface,20),"Go to sleep"))
+			alarmTime=self.parseTime(args)
+
+			if(alarmTime):
+				self.scheduler.schedule(alarmTime,Scheduler.Job(gotoSleep,(self.interface,20),"Go to sleep"))
 			else:
 				print("Error parsing argument "+args)
 		# add an alarm
 		if(command=="alarm"):
+			alarmTime=self.parseTime(args)
 
-			print("alarm not available yet")
+			if(alarmTime):
+				self.scheduler.schedule(alarmTime,Scheduler.Job(Alarm.wakeUp,(self.interface,60),"Alarm"))
+			else:
+				print("Error parsing argument "+args)
+
 
 	def parseTime(self,string):
 		"""parses a timestamp given in [string] in the format hh:mm[:ss] or dd/MM/YYYY[ hh:mm[:ss]] or +m and returns it as datetime.datetime or None on failure"""
@@ -46,6 +54,16 @@ class Parser:
 
 		if(result):
 			return result[0]
+
+		# check if a time offset was given
+		result=parse.parse("+{:d}",string)
+
+		if(result):
+			# calculate the timestamp
+			retn=datetime.datetime.now()
+			retn+=datetime.timedelta(minutes=result[0])
+
+			return retn 
 
 		# no timestamp could be detected,
 		return None
