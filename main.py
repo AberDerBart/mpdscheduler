@@ -5,8 +5,8 @@ import sys
 import Interface
 
 def signalHandler(signum, frame):
-	print("Caught some kill signal, closing...")
-	print("Closing")
+	print("Caught some kind of kill signal, closing...")
+	interface.stop()
 	sys.exit()
 
 signal.signal(signal.SIGABRT,signalHandler)
