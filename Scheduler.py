@@ -14,6 +14,8 @@ class Job:
 	def execute(self):
 		"""processes the job"""
 		self.func(*self.args)
+	def __lt__(self,other):
+		return False;
 
 class Scheduler:
 	"""Schedules jobs in a queue"""
@@ -98,13 +100,13 @@ class Scheduler:
 	
 	def __str__(self):
 		retn="Scheduler queue:"
-		for item in self.queue:
+		for index,item in enumerate(self.queue):
 			schedTime=item[0]
 			job=item[1]
 
 			timestr=str(schedTime.date())+" "
 			timestr+=str(schedTime.time().hour)+":"+str(schedTime.time().minute)
 
-			retn+="\n"+schedTime.strftime("%d/%m/%Y %H:%M")+" "+job.desc
+			retn+="\n"+str(index)+" "+schedTime.strftime("%d/%m/%Y %H:%M")+" "+job.desc
 
 		return retn

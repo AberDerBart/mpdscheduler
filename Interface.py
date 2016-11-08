@@ -18,6 +18,9 @@ class Interface:
 		self.client.subscribe("alarm")
 		self.client.subscribe("schedule")
 
+		# subscribe answering channels (to avoid errors)
+		self.client.subscribe("scheduled")
+
 		# initialize parser
 		self.parser=Parser.Parser(self)
 
