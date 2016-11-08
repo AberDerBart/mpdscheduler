@@ -64,6 +64,15 @@ class Scheduler:
 		"""stops the scheduler"""
 		if(self.timer):
 			self.timer.cancel()
+	def cancel(self,index):
+		"""cancels the job at the given index in the queue"""
+		self.queueLock.acquire()
+
+		if(len(self.queue)>index):
+			del self.queue[index]
+
+		self.queueLock.release()
+
 
 	def processQueue(self):
 		"""processes all due jobs in the queue"""

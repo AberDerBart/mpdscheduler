@@ -17,6 +17,7 @@ class Interface:
 		self.client.subscribe("sleep")
 		self.client.subscribe("alarm")
 		self.client.subscribe("schedule")
+		self.client.subscribe("cancel")
 
 		# subscribe answering channels (to avoid errors)
 		self.client.subscribe("scheduled")

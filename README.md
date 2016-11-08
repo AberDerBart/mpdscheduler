@@ -22,6 +22,7 @@ The syntax is as follows:
 * sleep: a sleep timer can be initialized by sending a timestamp on the sleep channel
 * alarm: an alarm can be set by sending a timestamp on the alarm channel
 * schedule: the schedule can be read by sending the "list" command on the schedule channel. The response is sent via the scheduled channel
+* cancel: any scheduled job can be canceled by sending the corresponding index on the cancel channel
 
 Any items scheduled to a time in the past are executed immediately. Timestamps can be any of the following formats:
 
