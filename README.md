@@ -20,6 +20,14 @@ Then send commands via mpd channels (for example using mpc). Each feature is con
 The syntax is as follows:
 
 * sleep: a sleep timer can be initialized by sending a timestamp on the sleep channel
+* alarm: an alarm can be set by sending a timestamp on the alarm channel
+* schedule: the schedule can be read by sending the "list" command on the schedule channel. The response is sent via the scheduled channel
+
+Any items scheduled to a time in the past are executed immediately. Timestamps can be any of the following formats:
+
+* +[minutes]: a time offset to the current time
+* HH:MM[:ss]: a time the current or the next day (dependent, if the time has passed already today)
+* dd/mm/yyyy HH:MM[:ss]: a date and time
 
 ### Examples
 
