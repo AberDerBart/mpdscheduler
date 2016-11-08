@@ -32,7 +32,10 @@ Any items scheduled to a time in the past are executed immediately. Timestamps c
 
 ### Examples
 
-Set a sleep timer for 19:30
+Set a sleep timer in 30 minutes
     
-    $ mpc sendmessage sleep 19:30
+    $ mpc sendmessage sleep +30
   
+Set an alarm for 7:25
+
+    $ mpc sendmessage alarm 7:25
