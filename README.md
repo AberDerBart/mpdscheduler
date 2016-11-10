@@ -1,8 +1,6 @@
-# fictional-potato
+# mpdScheduler
 
-fictional-potato is a client for mpd that adds functionality. This is intended to be done via the mpd channel interface (but not yet implemented).
-
-Thanks to GitHub for the nice name proposal.
+mpdScheduler is a client for mpd that adds functionality. This is intended to be done via the mpd channel interface (but not yet implemented).
 
 ## Supported features
 
