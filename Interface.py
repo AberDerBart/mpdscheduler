@@ -14,10 +14,7 @@ class Interface:
 		self.client.connect(mpdHost,mpdPort)
 
 		# subscribe channels
-		self.client.subscribe("sleep")
-		self.client.subscribe("alarm")
-		self.client.subscribe("schedule")
-		self.client.subscribe("cancel")
+		self.client.subscribe("scheduler")
 
 		# subscribe answering channels (to avoid errors)
 		self.client.subscribe("scheduled")
@@ -36,4 +33,5 @@ class Interface:
 			messages=self.client.readmessages()
 
 			for msg in messages:
-				self.parser.parse(msg)
+				if(msg["channel"]=="scheduler"):
+					self.parser.parse(msg["message"])

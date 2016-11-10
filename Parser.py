@@ -14,8 +14,15 @@ class Parser:
 		self.scheduler.stop()
 	def parse(self,msg):
 		"""parses and executes the command given in msg"""
-		command=msg["channel"]
-		args=msg["message"]
+		command=msg.split(maxsplit=1)[0]
+
+		if(len(msg.split(maxsplit=1))==2):
+			args=msg.split(maxsplit=1)[1]
+		else:
+			args=None
+
+		print("command: "+command)
+		print("args:    "+str(args))
 
 		# activate sleep timer
 		if(command=="sleep"):
@@ -35,10 +42,9 @@ class Parser:
 				print("Error parsing argument "+args)
 
 		# list scheduled items
-		if(command=="schedule"):
-			if(args=="list"):
-				for line in str(self.scheduler).split("\n"):
-					self.interface.client.sendmessage("scheduled",line)
+		if(command=="list"):
+			for line in str(self.scheduler).split("\n"):
+				self.interface.client.sendmessage("scheduled",line)
 		if(command=="cancel"):
 			index=parse.parse("{:d}",args)
 			if(index):
