@@ -16,13 +16,17 @@ def alarm(interface,fadeTime,song=None):
 		client.add(song)
 		#NOTE: actually the "insert" command is wanted here, but it seems not to be implemented in python-mpd2 - maybe a workaround can be found
 
-	#TODO: set volume to 0 before starting playback
-	print("alarm: starting playback")
-	client.play()
-	
 	if(endVol>0):
+		client.setvol(0)
+
+		print("alarm: starting playback")
+		client.play()
+		
 		fade(client,fadeTime,0,endVol)
 	else:
 		print("Volume not available, skipping fade.")
+
+		print("alarm: starting playback")
+		client.play()
 
 	client.close()
