@@ -26,7 +26,6 @@ Any items scheduled to a time in the past are executed immediately. Timestamps c
 
 * +[minutes]: a time offset to the current time
 * HH:MM[:ss]: a time the current or the next day (dependent, if the time has passed already today)
-* dd/mm/yyyy HH:MM[:ss]: a date and time
 
 ### Examples
 
