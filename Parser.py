@@ -37,7 +37,7 @@ class Parser:
 			alarmTime=self.parseTime(args)
 
 			if(alarmTime):
-				self.scheduler.schedule(alarmTime,Scheduler.Job(Alarm.wakeUp,(self.interface,60),"Alarm"))
+				self.scheduler.schedule(alarmTime,Scheduler.Job(Alarm.alarm,(self.interface,60),"Alarm"))
 			else:
 				print("Error parsing argument "+args)
 

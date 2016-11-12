@@ -3,14 +3,21 @@
 import mpd
 from Fade import fade
 
-def wakeUp(interface,fadeTime):
+def alarm(interface,fadeTime,song=None):
 	"""starts playback and fades in for [fadeTime] seconds"""
 	client=mpd.MPDClient()
 	client.connect(interface.host,interface.port)
 
 	endVol=int(client.status()["volume"])
+	
+	if(song):
+		#add set the playlist to contain only [song]
+		client.clear()
+		client.add(song)
+		#NOTE: actually the "insert" command is wanted here, but it seems not to be implemented in python-mpd2 - maybe a workaround can be found
 
-	print("wakeUp: starting playback")
+	#TODO: set volume to 0 before starting playback
+	print("alarm: starting playback")
 	client.play()
 	
 	if(endVol>0):
