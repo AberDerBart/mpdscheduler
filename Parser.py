@@ -14,41 +14,32 @@ class Parser:
 		self.scheduler.stop()
 	def parse(self,msg):
 		"""parses and executes the command given in msg"""
-		command=msg.split(maxsplit=1)[0]
-
-		if(len(msg.split(maxsplit=1))==2):
-			args=msg.split(maxsplit=1)[1]
-		else:
-			args=None
-
-		print("command: "+command)
-		print("args:    "+str(args))
+		args=msg.split()
+		command=args[0]
 
 		# activate sleep timer
-		if(command=="sleep"):
-			alarmTime=self.parseTime(args)
+		if(command=="sleep" and len(args)>=2):
+			alarmTime=self.parseTime(args[1])
 
 			if(alarmTime):
 				self.scheduler.schedule(alarmTime,Scheduler.Job(gotoSleep,(self.interface,20),"Go to sleep"))
-			else:
-				print("Error parsing argument "+args)
+				return
 		# add an alarm
-		if(command=="alarm"):
-			alarmTime=self.parseTime(args)
+		if(command=="alarm" and len(args)>=2):
+			alarmTime=self.parseTime(args[1])
 
 			if(alarmTime):
 				self.scheduler.schedule(alarmTime,Scheduler.Job(Alarm.wakeUp,(self.interface,60),"Alarm"))
-			else:
-				print("Error parsing argument "+args)
-
+				return
 		# list scheduled items
 		if(command=="list"):
 			for line in str(self.scheduler).split("\n"):
 				self.interface.client.sendmessage("scheduled",line)
-		if(command=="cancel"):
-			index=parse.parse("{:d}",args)
+		if(command=="cancel" and len(args)>=2):
+			index=parse.parse("{:d}",args[1])
 			if(index):
 				self.scheduler.cancel(index[0])
+		print("Error parsing string "+args)
 
 	def parseTime(self,string):
 		"""parses a timestamp given in [string] in the format hh:mm[:ss] or dd/MM/YYYY[ hh:mm[:ss]] or +m and returns it as datetime.datetime or None on failure"""
