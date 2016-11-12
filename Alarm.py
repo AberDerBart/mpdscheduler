@@ -10,12 +10,17 @@ def wakeUp(interface,fadeTime):
 
 	endVol=int(client.status()["volume"])
 
-	print("wakeUp: starting playback")
-	client.play()
-	
 	if(endVol>0):
+		client.setvol(0)
+
+		print("alarm: starting playback")
+		client.play()
+		
 		fade(client,fadeTime,0,endVol)
 	else:
 		print("Volume not available, skipping fade.")
+
+		print("alarm: starting playback")
+		client.play()
 
 	client.close()
