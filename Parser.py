@@ -28,8 +28,13 @@ class Parser:
 		if(command=="alarm" and len(args)>=2):
 			alarmTime=self.parseTime(args[1])
 
+			if(len(args)>=3):
+				song=msg.split(maxsplit=2)[2]
+			else:
+				song=None
+
 			if(alarmTime):
-				self.scheduler.schedule(alarmTime,Scheduler.Job(Alarm.alarm,(self.interface,60),"Alarm"))
+				self.scheduler.schedule(alarmTime,Scheduler.Job(Alarm.alarm,(self.interface,60,song),"Alarm"))
 				return
 		# list scheduled items
 		if(command=="list"):
