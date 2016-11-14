@@ -9,24 +9,27 @@ def alarm(interface,fadeTime,song=None):
 	client.connect(interface.host,interface.port)
 
 	endVol=int(client.status()["volume"])
+
+	index=None
 	
 	if(song):
-		#add set the playlist to contain only [song]
-		client.clear()
-		client.add(song)
-		#NOTE: actually the "insert" command is wanted here, but it seems not to be implemented in python-mpd2 - maybe a workaround can be found
+		# add the song to the queue
+		index=client.add(song)
+		
 
 	if(endVol>0):
 		client.setvol(0)
 
 		print("alarm: starting playback")
-		client.play()
+		if(index!=None):
+			client.playid(index)
 		
 		fade(client,fadeTime,0,endVol)
 	else:
 		print("Volume not available, skipping fade.")
 
 		print("alarm: starting playback")
-		client.play()
+		if(index!=None):
+			client.playid(index)
 
 	client.close()
