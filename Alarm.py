@@ -14,8 +14,8 @@ def alarm(interface,fadeTime,song=None):
 	
 	if(song):
 		# add the song to the queue
-		index=client.add(song)
-		
+		print("alarm: adding song "+song)
+		index=client.addid(song)
 
 	if(endVol>0):
 		client.setvol(0)
@@ -23,6 +23,8 @@ def alarm(interface,fadeTime,song=None):
 		print("alarm: starting playback")
 		if(index!=None):
 			client.playid(index)
+		else:
+			client.play()
 		
 		fade(client,fadeTime,0,endVol)
 	else:
@@ -31,5 +33,7 @@ def alarm(interface,fadeTime,song=None):
 		print("alarm: starting playback")
 		if(index!=None):
 			client.playid(index)
+		else:
+			client.play()
 
 	client.close()
