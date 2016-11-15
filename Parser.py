@@ -40,11 +40,13 @@ class Parser:
 		if(command=="list"):
 			for line in str(self.scheduler).split("\n"):
 				self.interface.client.sendmessage("scheduled",line)
+			return
 		if(command=="cancel" and len(args)>=2):
 			index=parse.parse("{:d}",args[1])
 			if(index):
 				self.scheduler.cancel(index[0])
-		print("Error parsing string "+args)
+				return
+		print("Error parsing string \""+msg+"\"")
 
 	def parseTime(self,string):
 		"""parses a timestamp given in [string] in the format hh:mm[:ss] or dd/MM/YYYY[ hh:mm[:ss]] or +m and returns it as datetime.datetime or None on failure"""
