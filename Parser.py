@@ -30,6 +30,9 @@ class Parser:
 
 			if(len(args)>=3):
 				song=msg.split(maxsplit=2)[2]
+				if(int(self.interface.client.count("File",song)["songs"])==0):
+					print("Parser: song not found: "+song)
+					song=None
 			else:
 				song=None
 
