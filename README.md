@@ -5,6 +5,9 @@ mpdScheduler is a client for mpd that adds functionality. This is intended to be
 ## Supported features
 
 * sleep - lets mpd fade out and stop the playback after a specified amount of time
+* alarm - lets mpd start playback fade in at a specified point in time
+* list all sleep timers and alarms
+* cancel scheduled sleep timers and alarms
 
 ## Usage
 
