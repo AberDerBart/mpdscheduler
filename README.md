@@ -1,10 +1,13 @@
 # mpdScheduler
 
-mpdScheduler is a client for mpd that adds functionality. This is intended to be done via the mpd channel interface (but not yet implemented).
+mpdScheduler is a client for mpd that adds functionality. This is done via the mpd channel interface.
 
 ## Supported features
 
 * sleep - lets mpd fade out and stop the playback after a specified amount of time
+* alarm - lets mpd start playback fade in at a specified point in time
+* list all sleep timers and alarms
+* cancel scheduled sleep timers and alarms
 
 ## Usage
 
@@ -12,7 +15,7 @@ Start the program by typing
 
     $ python main.py [mpdHost [mpdPort]]
 
-If mpdPort is not given, fictional-potato will default to 6600. If mpdHost is not given, fictional-potato will read the $MPD_HOST environment variable or default to localhost, if $MPD_HOST is not set.
+If mpdPort is not given, mpdScheduler will default to 6600. If mpdHost is not given, mpdScheduler will read the $MPD_HOST environment variable or default to localhost, if $MPD_HOST is not set.
 
 Then send commands via the mpd channel "scheduler" (for example using mpc). Responses are sent on the "scheduled" channel.
 The syntax is as follows:
