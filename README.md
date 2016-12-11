@@ -9,6 +9,13 @@ mpdScheduler is a client for mpd that adds functionality. This is done via the m
 * list all sleep timers and alarms
 * cancel scheduled sleep timers and alarms
 
+## Dependencies
+
+mpdScheduler has the following dependencies:
+
+* python-mpd2
+* parse
+
 ## Usage
 
 Start the program by typing
