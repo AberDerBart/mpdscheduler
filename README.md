@@ -27,10 +27,10 @@ If mpdPort is not given, mpdScheduler will default to 6600. If mpdHost is not gi
 Then send commands via the mpd channel "scheduler" (for example using mpc). Responses are sent on the "scheduled" channel.
 The syntax is as follows:
 
-* sleep: a sleep timer can be initialized by sending a timestamp on the sleep channel
-* alarm: an alarm can be set by sending a timestamp on the alarm channel
-* list: returns a list of all currently scheduled items
-* cancel: any scheduled job can be canceled by sending the corresponding index on the cancel channel
+* sleep [timestamp]: initializes a sleep timer for [timestamp]
+* alarm [timestamp]: sets an alarm for [timestamp]
+* list: returns a list of all currently scheduled tasks (sleep timers and alarms)
+* cancel [index]: cancels the task with index [index]. The indexes are shown in the response of the list command
 
 Any items scheduled to a time in the past are executed immediately. Timestamps can be any of the following formats:
 
@@ -46,3 +46,7 @@ Set a sleep timer in 30 minutes
 Set an alarm for 7:25
 
     $ mpc sendmessage scheduler "alarm 7:25"
+    
+Cancel job with index 13
+
+    $ mpc sendmessage scheduler "cancel 13"
