@@ -44,6 +44,10 @@ class Parser:
 			for line in str(self.scheduler).split("\n"):
 				self.interface.client.sendmessage("scheduled",line)
 			return
+		# list scheduled items in json format
+		if(command=="list_json"):
+			self.interface.client.sendmessage("scheduled",self.scheduler.toJson())
+			return
 		if(command=="cancel" and len(args)>=2):
 			index=parse.parse("{:d}",args[1])
 			if(index):

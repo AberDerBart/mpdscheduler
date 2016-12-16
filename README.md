@@ -31,6 +31,7 @@ The syntax is as follows:
 * alarm [timestamp]: sets an alarm for [timestamp]
 * list: returns a list of all currently scheduled tasks (sleep timers and alarms)
 * cancel [index]: cancels the task with index [index]. The indexes are shown in the response of the list command
+* list_json: returns a json-encoded version of the list of scheduled items
 
 Any items scheduled to a time in the past are executed immediately. Timestamps can be any of the following formats:
 
