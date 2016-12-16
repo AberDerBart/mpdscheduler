@@ -24,6 +24,7 @@ The syntax is as follows:
 * alarm: an alarm can be set by sending a timestamp on the alarm channel
 * list: returns a list of all currently scheduled items
 * cancel: any scheduled job can be canceled by sending the corresponding index on the cancel channel
+* list_json: returns a json-encoded version of the list of scheduled items
 
 Any items scheduled to a time in the past are executed immediately. Timestamps can be any of the following formats:
 

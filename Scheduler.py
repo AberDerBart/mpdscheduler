@@ -2,6 +2,7 @@ import time
 import threading
 import mpd
 import datetime
+import json
 
 class Job:
 	"""Representation of a scheduled job"""
@@ -119,3 +120,18 @@ class Scheduler:
 			retn+="\n"+str(index)+" "+schedTime.strftime("%d/%m/%Y %H:%M")+" "+job.desc
 
 		return retn
+	def toJson(self):
+		data=[]
+
+		for index,item in enumerate(self.queue):
+			schedTime=item[0]
+			job=item[1]
+
+			timestr=str(schedTime.date())+" "
+			timestr+=str(schedTime.time().hour)+":"+str(schedTime.time().minute)
+
+			data.append({"index":index,"time":timestr,"job":job.desc})
+
+		jsonDict={"type":"scheduleList","data":data}
+
+		return json.dumps(jsonDict,separators=(',',':'))
