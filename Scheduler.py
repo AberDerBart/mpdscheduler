@@ -3,6 +3,7 @@ import threading
 import mpd
 import datetime
 import json
+import uuid
 
 class Job:
 	"""Representation of a scheduled job"""
@@ -11,7 +12,7 @@ class Job:
 		self.func=function
 		self.args=arguments
 		self.desc=description
-
+		self.uuid=uuid.uuid1()
 	def execute(self):
 		"""processes the job"""
 		self.func(*self.args)
