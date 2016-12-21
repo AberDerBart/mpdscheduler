@@ -131,7 +131,7 @@ class Scheduler:
 			timestr=str(schedTime.date())+" "
 			timestr+=str(schedTime.time().hour)+":"+str(schedTime.time().minute)
 
-			data.append({"index":index,"time":timestr,"job":job.desc})
+			data.append({"index":index,"time":timestr,"job":job.desc,"uuid":str(job.uuid)})
 
 		jsonDict={"type":"scheduleList","data":data}
 
