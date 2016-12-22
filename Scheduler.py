@@ -71,6 +71,7 @@ class Scheduler:
 		self.queueLock.acquire()
 
 		if(len(self.queue)>index):
+			print("canceling job #"+str(index)+": "+self.queue[index][1].desc)
 			del self.queue[index]
 
 		self.queueLock.release()
@@ -83,8 +84,8 @@ class Scheduler:
 		delIndex=-1
 		
 		for index,item in enumerate(self.queue):
-			if item[1].uuid==uuid:
-				deIndex==index
+			if str(item[1].uuid)==uuid:
+				delIndex=index
 
 		if(delIndex!=-1):
 			self.cancel(delIndex)

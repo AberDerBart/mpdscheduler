@@ -48,10 +48,16 @@ class Parser:
 		if(command=="list_json"):
 			self.interface.client.sendmessage("scheduled",self.scheduler.toJson())
 			return
+		# cancel a job by index
 		if(command=="cancel" and len(args)>=2):
 			index=parse.parse("{:d}",args[1])
 			if(index):
 				self.scheduler.cancel(index[0])
+				return
+		if(command=="cancel_uuid" and len(args)>=2):
+			uuid=args[1]
+			if(uuid):
+				self.scheduler.cancelUuid(uuid)
 				return
 		print("Error parsing string \""+msg+"\"")
 
