@@ -75,6 +75,19 @@ class Scheduler:
 
 		self.queueLock.release()
 
+	def cancelUuid(self,uuid):
+		"""cancels the job with the given uuid"""
+		# NOTE: the approach to iterate the queue to find the uuid might be considered ugly
+		# still, as the queue is expected to be short (as you dont set a lot of sleep timers or alarms),
+		# this is more efficient than maintaining a dictionary of jobs by uuid
+		delIndex=-1
+		
+		for index,item in enumerate(self.queue):
+			if item[1].uuid==uuid:
+				deIndex==index
+
+		if(delIndex!=-1):
+			self.cancel(delIndex)
 
 	def processQueue(self):
 		"""processes all due jobs in the queue"""
