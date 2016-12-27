@@ -9,6 +9,7 @@ class Job:
 	"""Representation of a scheduled job"""
 
 	def __init__(self,function,arguments,description):
+		"""instantiates a Job with the given parameters, using a timestamp-based uuid"""
 		self.func=function
 		self.args=arguments
 		self.desc=description
@@ -17,12 +18,14 @@ class Job:
 		"""processes the job"""
 		self.func(*self.args)
 	def __lt__(self,other):
+		"""jobs don't have a specified order, always returns False"""
 		return False;
 
 class Scheduler:
 	"""Schedules jobs in a queue"""
 
 	def __init__(self):
+		"""instantiates a Scheduler"""
 		self.timer=None
 		self.queue=[]
 		self.queueLock=threading.Lock()
@@ -77,7 +80,7 @@ class Scheduler:
 		self.queueLock.release()
 
 	def cancelUuid(self,uuid):
-		"""cancels the job with the given uuid"""
+		"""cancels the job with the given uuid (as string)"""
 		# NOTE: the approach to iterate the queue to find the uuid might be considered ugly
 		# still, as the queue is expected to be short (as you dont set a lot of sleep timers or alarms),
 		# this is more efficient than maintaining a dictionary of jobs by uuid
@@ -136,6 +139,7 @@ class Scheduler:
 
 		return retn
 	def toJson(self):
+		"""gives a json representation of the queue"""
 		data=[]
 
 		for index,item in enumerate(self.queue):

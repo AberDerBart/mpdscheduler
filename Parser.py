@@ -8,9 +8,11 @@ import Alarm
 
 class Parser:
 	def __init__(self,interface):
+		"""instantiates Parser, using [interface.mpdHost] as reference mpd host and [interface.mpdPort] as reference mpd port"""
 		self.scheduler=Scheduler.Scheduler()
 		self.interface=interface
 	def stop(self):
+		"""stops the scheduler"""
 		self.scheduler.stop()
 	def parse(self,msg):
 		"""parses and executes the command given in msg"""
@@ -62,7 +64,7 @@ class Parser:
 		print("Error parsing string \""+msg+"\"")
 
 	def parseTime(self,string):
-		"""parses a timestamp given in [string] in the format hh:mm[:ss] or dd/MM/YYYY[ hh:mm[:ss]] or +m and returns it as datetime.datetime or None on failure"""
+		"""parses a timestamp given in [string] in the format hh:mm[:ss] or +m and returns it as datetime.datetime or None on failure"""
 		# check, if a time string was given
 		result=parse.parse("{:tt}",string)
 
