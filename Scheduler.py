@@ -8,8 +8,9 @@ import uuid
 class Job:
 	"""Representation of a scheduled job"""
 
-	def __init__(self,function,arguments,description):
+	def __init__(self,time,function,arguments,description):
 		"""instantiates a Job with the given parameters, using a timestamp-based uuid"""
+		self.time=time
 		self.func=function
 		self.args=arguments
 		self.desc=description
@@ -18,8 +19,8 @@ class Job:
 		"""processes the job"""
 		self.func(*self.args)
 	def __lt__(self,other):
-		"""jobs don't have a specified order, always returns False"""
-		return False;
+		"""order by time"""
+		return self.time < other.time
 
 class Scheduler:
 	"""Schedules jobs in a queue"""
@@ -30,18 +31,18 @@ class Scheduler:
 		self.queue=[]
 		self.queueLock=threading.Lock()
 
-	def schedule(self,startTime,job):
+	def schedule(self,job):
 		"""Attaches [job] to the job queue"""
-		print("Scheduling \""+job.desc+"\".")
+		print("Scheduling \""+job.desc+"\" at "+str(job.time)+".")
 
 		self.queueLock.acquire()
 
-		self.queue.append((startTime,job))
+		self.queue.append(job)
 		# sort queue by [startTime]
 		self.queue.sort()
 
 		# if the new job is first in the queue the timer has to be reset
-		if(startTime == self.queue[0][0]):
+		if(job == self.queue[0]):
 			# (re)start the timer
 			self.initTimer()
 
@@ -55,7 +56,7 @@ class Scheduler:
 
 		if(self.queue):
 			# calculate waiting time
-			timeDiff=self.queue[0][0]-datetime.datetime.now()
+			timeDiff=self.queue[0].time-datetime.datetime.now()
 			waitTime=timeDiff.total_seconds()
 
 			# start a new timer
@@ -74,7 +75,7 @@ class Scheduler:
 		self.queueLock.acquire()
 
 		if(len(self.queue)>index):
-			print("canceling job #"+str(index)+": "+self.queue[index][1].desc)
+			print("canceling job #"+str(index)+": "+self.queue[index].desc)
 			del self.queue[index]
 
 		self.queueLock.release()
@@ -100,12 +101,12 @@ class Scheduler:
 		self.queueLock.acquire()
 
 		if(self.queue):
-			nextTime,nextJob=self.queue[0]
+			nextJob=self.queue[0]
 		else:
-			nextTime=None
+			nextJob=None
 
 		# process jobs until there is no due job left
-		while(nextTime and nextTime<=datetime.datetime.now()):
+		while(nextJob and nextJob.time<=datetime.datetime.now()):
 			# remove the job from the queue
 			self.queue.pop(0)
 
@@ -117,9 +118,9 @@ class Scheduler:
 
 			# get the next job and execution time
 			if(self.queue):
-				nextTime,nextJob=self.queue[0]
+				nextJob=self.queue[0]
 			else:
-				nextTime=None
+				nextJob=None
 			
 		# reactivate the timer
 		self.initTimer()
@@ -128,9 +129,8 @@ class Scheduler:
 	
 	def __str__(self):
 		retn="Scheduler queue:"
-		for index,item in enumerate(self.queue):
-			schedTime=item[0]
-			job=item[1]
+		for index,job in enumerate(self.queue):
+			schedTime=job.time
 
 			timestr=str(schedTime.date())+" "
 			timestr+=str(schedTime.time().hour)+":"+str(schedTime.time().minute)
@@ -142,9 +142,8 @@ class Scheduler:
 		"""gives a json representation of the queue"""
 		data=[]
 
-		for index,item in enumerate(self.queue):
-			schedTime=item[0]
-			job=item[1]
+		for index,job in enumerate(self.queue):
+			schedTime=job.time
 
 			timestr=str(schedTime.date())+" "
 			timestr+=str(schedTime.time().hour)+":"+str(schedTime.time().minute)
