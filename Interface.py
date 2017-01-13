@@ -6,24 +6,26 @@ import Parser
 
 class Interface:
 	def __init__(self,mpdHost,mpdPort):		
-		"""establishes a connection to mpd host [mpdHost] on port [mpdPort]"""
+		"""set the parameters and creates the client"""
 		self.host=mpdHost
 		self.port=mpdPort
-		# connect
 		self.client=mpd.MPDClient()
-		print("Connecting to "+mpdHost+" on Port "+str(mpdPort))
-		self.client.connect(mpdHost,mpdPort)
+		self.connect()
+
+		# initialize parser
+		self.parser=Parser.Parser(self)
+
+		self.quit=False
+	def connect(self):
+		"""establishes a connection to mpd host [host] on port [port]"""
+		print("Connecting to "+self.host+" on Port "+str(self.port))
+		self.client.connect(self.host,self.port)
 
 		# subscribe channels
 		self.client.subscribe("scheduler")
 
 		# subscribe answering channels (to avoid errors)
 		self.client.subscribe("scheduled")
-
-		# initialize parser
-		self.parser=Parser.Parser(self)
-
-		self.quit=False
 	def stop(self):
 		"""stops the main loop and all threads started by its children"""
 		self.quit=True
