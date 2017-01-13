@@ -1,5 +1,5 @@
 #!/bin/python
-from Sleep import gotoSleep
+from Sleep import SleepTimer
 import Scheduler
 import time
 import parse
@@ -24,7 +24,7 @@ class Parser:
 			sleepTime=self.parseTime(args[1])
 
 			if(sleepTime):
-				self.scheduler.schedule(Scheduler.Job(sleepTime,gotoSleep,(self.interface,20),"Go to sleep"))
+				self.scheduler.schedule(SleepTimer(sleepTime,self.interface))
 				return
 		# add an alarm
 		if(command=="alarm" and len(args)>=2):
