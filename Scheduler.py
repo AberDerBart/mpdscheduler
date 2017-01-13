@@ -87,8 +87,8 @@ class Scheduler:
 		# this is more efficient than maintaining a dictionary of jobs by uuid
 		delIndex=-1
 		
-		for index,item in enumerate(self.queue):
-			if str(item[1].uuid)==uuid:
+		for index,job in enumerate(self.queue):
+			if str(job.uuid)==uuid:
 				delIndex=index
 
 		if(delIndex!=-1):
