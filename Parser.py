@@ -20,12 +20,10 @@ class Parser:
 		command=args[0]
 
 		# activate sleep timer
-		if(command=="sleep" and len(args)>=2):
-			sleepTime=self.parseTime(args[1])
-
-			if(sleepTime):
-				self.scheduler.schedule(SleepTimer(sleepTime,self.interface))
-				return
+		res=parse.parse("sleep +{offset:d}", msg) or parse.parse("sleep {time:tt}", msg)
+		if(res):
+			self.scheduler.schedule(SleepTimer(self.getTime(res),self.interface))
+			return
 		# add an alarm
 		if(command=="alarm" and len(args)>=2):
 			alarmTime=self.parseTime(args[1])
@@ -63,6 +61,21 @@ class Parser:
 		# nothing could be parsed
 		print("Error parsing string \""+msg+"\"")
 
+	def getTime(self,parseRes):
+		"""return the timestamp referred in [parseRes] (either given in an offset in minutes or as dataTime"""
+		if("time" in parseRes.named):
+			retn=datetime.datetime.combine(datetime.date.today(),parseRes["time"])
+
+			# if the time already passed, increment the day
+			if(retn < datetime.datetime.now()):
+				retn += datetime.timedelta(days=1)
+			return retn
+		if("offset" in parseRes.named):
+			# calculate the timestamp
+			retn=datetime.datetime.now()
+			retn+=datetime.timedelta(minutes=parseRes["offset"])
+			return retn
+		return None
 	def parseTime(self,string):
 		"""parses a timestamp given in [string] in the format hh:mm[:ss] or +m and returns it as datetime.datetime or None on failure"""
 		# check, if a time string was given
@@ -70,11 +83,9 @@ class Parser:
 
 		if(result):
 			retn=datetime.datetime.combine(datetime.date.today(),result[0])
-
 			# if the time already passed, increment the day
 			if(retn < datetime.datetime.now()):
 				retn += datetime.timedelta(days=1)
-		
 			return retn
 
 		# check, if a date string was given
