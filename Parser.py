@@ -42,25 +42,25 @@ class Parser:
 				self.scheduler.schedule(Alarm(alarmTime,self.interface,song))
 				return
 		# list scheduled items
-		if(command=="list"):
+		if(parse.parse("list",msg)):
 			for line in str(self.scheduler).split("\n"):
 				self.interface.client.sendmessage("scheduled",line)
 			return
 		# list scheduled items in json format
-		if(command=="list_json"):
+		if(parse.parse("list_json",msg)):
 			self.interface.client.sendmessage("scheduled",self.scheduler.toJson())
 			return
 		# cancel a job by index
-		if(command=="cancel" and len(args)>=2):
-			index=parse.parse("{:d}",args[1])
-			if(index):
-				self.scheduler.cancel(index[0])
-				return
-		if(command=="cancel_uuid" and len(args)>=2):
-			uuid=args[1]
-			if(uuid):
-				self.scheduler.cancelUuid(uuid)
-				return
+		res=parse.parse("cancel {id:d}",msg)
+		if(res):
+			self.scheduler.cancel(res['id'])
+			return
+		# cancel a job by uuid
+		res=parse.parse("cancel_uuid {uuid}",msg)
+		if(res):
+			self.scheduler.cancelUuid(res['uuid'])
+			return
+		# nothing could be parsed
 		print("Error parsing string \""+msg+"\"")
 
 	def parseTime(self,string):
