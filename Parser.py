@@ -21,10 +21,10 @@ class Parser:
 
 		# activate sleep timer
 		if(command=="sleep" and len(args)>=2):
-			alarmTime=self.parseTime(args[1])
+			sleepTime=self.parseTime(args[1])
 
-			if(alarmTime):
-				self.scheduler.schedule(alarmTime,Scheduler.Job(gotoSleep,(self.interface,20),"Go to sleep"))
+			if(sleepTime):
+				self.scheduler.schedule(Scheduler.Job(sleepTime,gotoSleep,(self.interface,20),"Go to sleep"))
 				return
 		# add an alarm
 		if(command=="alarm" and len(args)>=2):
@@ -39,7 +39,7 @@ class Parser:
 				song=None
 
 			if(alarmTime):
-				self.scheduler.schedule(alarmTime,Scheduler.Job(Alarm.alarm,(self.interface,60,song),"Alarm"))
+				self.scheduler.schedule(Scheduler.Job(alarmTime,Alarm.alarm,(self.interface,60,song),"Alarm"))
 				return
 		# list scheduled items
 		if(command=="list"):
