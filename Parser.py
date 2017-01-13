@@ -4,7 +4,7 @@ import Scheduler
 import time
 import parse
 import datetime
-import Alarm
+from Alarm import Alarm
 
 class Parser:
 	def __init__(self,interface):
@@ -39,7 +39,7 @@ class Parser:
 				song=None
 
 			if(alarmTime):
-				self.scheduler.schedule(Scheduler.Job(alarmTime,Alarm.alarm,(self.interface,60,song),"Alarm"))
+				self.scheduler.schedule(Alarm(alarmTime,self.interface,song))
 				return
 		# list scheduled items
 		if(command=="list"):

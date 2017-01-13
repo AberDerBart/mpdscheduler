@@ -2,6 +2,7 @@
 
 import mpd
 from Fade import fade
+from Scheduler import Job
 
 def alarm(interface,fadeTime,song=None):
 	"""starts playback and fades in for [fadeTime] seconds"""
@@ -37,3 +38,9 @@ def alarm(interface,fadeTime,song=None):
 			client.play()
 
 	client.close()
+
+class Alarm(Job):
+	"""a job starting the playback and fading in the music at given time"""
+	def __init__(self,time,interface,song=None,fadeTime=60):
+		"""creates the job, does nothing special"""
+		super().__init__(time,alarm,(interface,fadeTime,song),"Alarm")
