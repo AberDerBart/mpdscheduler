@@ -67,33 +67,3 @@ class Parser:
 			retn+=datetime.timedelta(minutes=parseRes["offset"])
 			return retn
 		return None
-	def parseTime(self,string):
-		"""parses a timestamp given in [string] in the format hh:mm[:ss] or +m and returns it as datetime.datetime or None on failure"""
-		# check, if a time string was given
-		result=parse.parse("{:tt}",string)
-
-		if(result):
-			retn=datetime.datetime.combine(datetime.date.today(),result[0])
-			# if the time already passed, increment the day
-			if(retn < datetime.datetime.now()):
-				retn += datetime.timedelta(days=1)
-			return retn
-
-		# check, if a date string was given
-		result=parse.parse("{:tg}",string)
-
-		if(result):
-			return result[0]
-
-		# check if a time offset was given
-		result=parse.parse("+{:d}",string)
-
-		if(result):
-			# calculate the timestamp
-			retn=datetime.datetime.now()
-			retn+=datetime.timedelta(minutes=result[0])
-
-			return retn 
-
-		# no timestamp could be detected,
-		return None
