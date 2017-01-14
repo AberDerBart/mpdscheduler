@@ -14,9 +14,11 @@ def alarm(interface,fadeTime,song=None):
 	index=None
 	
 	if(song):
-		# add the song to the queue
-		print("alarm: adding song "+song)
-		index=client.addid(song)
+		try:
+			print("alarm: adding song "+song)
+			index=client.addid(song)
+		except mpd.CommandError:
+			print("alarm: song not found: "+song)
 
 	if(endVol>0):
 		client.setvol(0)

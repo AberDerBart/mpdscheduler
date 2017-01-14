@@ -28,15 +28,7 @@ class Parser:
 		# add an alarm
 		res=optParse("alarm +{offset:d}[ {song}]",msg) or optParse("alarm {time:tt}[ {song}]",msg)
 		if(res):
-			alarmTime=self.getTime(res)
-			if("song" in res.named):
-				song=res["song"]
-				if(int(self.interface.client.count("File",song)["songs"])==0):
-					print("Parser: song not found: "+song)
-					song=None
-			else:
-				song=None
-			self.scheduler.schedule(Alarm(alarmTime,self.interface,song))
+			self.scheduler.schedule(Alarm(self.getTime(res),self.interface,res.named.get("song")))
 			return
 		# list scheduled items
 		if(parse.parse("list",msg)):
