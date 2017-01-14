@@ -5,6 +5,7 @@ import time
 import parse
 import datetime
 from Alarm import Alarm
+from advParse.advParse import optParse
 
 class Parser:
 	def __init__(self,interface):
@@ -25,20 +26,18 @@ class Parser:
 			self.scheduler.schedule(SleepTimer(self.getTime(res),self.interface))
 			return
 		# add an alarm
-		if(command=="alarm" and len(args)>=2):
-			alarmTime=self.parseTime(args[1])
-
-			if(len(args)>=3):
-				song=msg.split(maxsplit=2)[2]
+		res=optParse("alarm +{offset:d}[ {song}]",msg) or optParse("alarm {time:tt}[ {song}]",msg)
+		if(res):
+			alarmTime=self.getTime(res)
+			if("song" in res.named):
+				song=res["song"]
 				if(int(self.interface.client.count("File",song)["songs"])==0):
 					print("Parser: song not found: "+song)
 					song=None
 			else:
 				song=None
-
-			if(alarmTime):
-				self.scheduler.schedule(Alarm(alarmTime,self.interface,song))
-				return
+			self.scheduler.schedule(Alarm(alarmTime,self.interface,song))
+			return
 		# list scheduled items
 		if(parse.parse("list",msg)):
 			for line in str(self.scheduler).split("\n"):
