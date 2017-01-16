@@ -21,6 +21,9 @@ def alarm(fadeTime,song=None):
 		except mpd.CommandError:
 			print("alarm: song not found: "+song)
 
+	if(len(client.playlist()) == 0):
+		client.add(Config.alarmDefaultSong)
+
 	if(endVol>0):
 		client.setvol(0)
 
