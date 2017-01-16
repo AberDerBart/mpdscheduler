@@ -8,10 +8,9 @@ from Alarm import Alarm
 from advParse.advParse import optParse
 
 class Parser:
-	def __init__(self,interface):
-		"""instantiates Parser, using [interface.mpdHost] as reference mpd host and [interface.mpdPort] as reference mpd port"""
+	def __init__(self):
+		"""instantiates Parser"""
 		self.scheduler=Scheduler.Scheduler()
-		self.interface=interface
 	def stop(self):
 		"""stops the scheduler"""
 		self.scheduler.stop()
@@ -24,31 +23,27 @@ class Parser:
 		res=parse.parse("sleep +{offset:d}", msg) or parse.parse("sleep {time:tt}", msg)
 		if(res):
 			self.scheduler.schedule(SleepTimer(self.getTime(res)))
-			return
+			return None
 		# add an alarm
 		res=optParse("alarm +{offset:d}[ {song}]",msg) or optParse("alarm {time:tt}[ {song}]",msg)
 		if(res):
 			self.scheduler.schedule(Alarm(self.getTime(res),res.named.get("song")))
-			return
+			return None
 		# list scheduled items
 		if(parse.parse("list",msg)):
-			for line in str(self.scheduler).split("\n"):
-				self.interface.client.sendmessage("scheduled",line)
-			return
+			return str(self.scheduler)
 		# list scheduled items in json format
 		if(parse.parse("list_json",msg)):
-			self.interface.client.sendmessage("scheduled",self.scheduler.toJson())
-			return
+			return self.scheduler.toJson()
 		# cancel a job by index
 		res=parse.parse("cancel {id:d}",msg)
 		if(res):
-			self.scheduler.cancel(res['id'])
-			return
+			return None
 		# cancel a job by uuid
 		res=parse.parse("cancel_uuid {uuid}",msg)
 		if(res):
 			self.scheduler.cancelUuid(res['uuid'])
-			return
+			return None
 		# nothing could be parsed
 		print("Error parsing string \""+msg+"\"")
 

@@ -13,7 +13,7 @@ class Interface:
 		self.client=mpd.MPDClient()
 
 		# initialize parser
-		self.parser=Parser.Parser(self)
+		self.parser=Parser.Parser()
 
 		self.quit=False
 
@@ -48,4 +48,8 @@ class Interface:
 
 			for msg in messages:
 				if(msg["channel"]=="scheduler"):
-					self.parser.parse(msg["message"])
+					reply=self.parser.parse(msg["message"])
+
+					if(reply):
+						for line in reply.split("\n"):
+							self.client.sendmessage("scheduled",line)
