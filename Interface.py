@@ -3,12 +3,13 @@
 import threading
 import mpd
 import Parser
+import Config
 
 class Interface:
-	def __init__(self,mpdHost,mpdPort):		
+	def __init__(self):
 		"""set the parameters and creates the client"""
-		self.host=mpdHost
-		self.port=mpdPort
+		self.host=Config.Config.host
+		self.port=Config.Config.port
 		self.client=mpd.MPDClient()
 
 		# initialize parser

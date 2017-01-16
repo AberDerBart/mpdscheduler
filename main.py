@@ -29,6 +29,6 @@ if(len(sys.argv)>=3):
 	mpdPort=sys.argv[2]
 
 # setup the interface
-interface=Interface.Interface(mpdHost,mpdPort)
+interface=Interface.Interface()
 
 interface.start()
