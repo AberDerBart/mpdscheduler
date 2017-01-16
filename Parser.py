@@ -23,12 +23,12 @@ class Parser:
 		# activate sleep timer
 		res=parse.parse("sleep +{offset:d}", msg) or parse.parse("sleep {time:tt}", msg)
 		if(res):
-			self.scheduler.schedule(SleepTimer(self.getTime(res),self.interface))
+			self.scheduler.schedule(SleepTimer(self.getTime(res)))
 			return
 		# add an alarm
 		res=optParse("alarm +{offset:d}[ {song}]",msg) or optParse("alarm {time:tt}[ {song}]",msg)
 		if(res):
-			self.scheduler.schedule(Alarm(self.getTime(res),self.interface,res.named.get("song")))
+			self.scheduler.schedule(Alarm(self.getTime(res),res.named.get("song")))
 			return
 		# list scheduled items
 		if(parse.parse("list",msg)):

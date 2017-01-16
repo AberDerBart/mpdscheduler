@@ -3,11 +3,12 @@
 import mpd
 from Fade import fade
 from Scheduler import Job
+from Config import Config
 
-def gotoSleep(interface,fadeTime):
+def gotoSleep(fadeTime):
 	"""fades for [fadeTime] seconds, then stops playback and restores the volume"""
 	client=mpd.MPDClient()
-	client.connect(interface.host,interface.port)
+	client.connect(Config.host,Config.port)
 
 	startVol=int(client.status()["volume"])
 	
@@ -27,6 +28,6 @@ def gotoSleep(interface,fadeTime):
 	
 class SleepTimer(Job):
 	"""a job fading out the music and stopping playback at given time"""
-	def __init__(self,time,interface,fadeTime=60):
+	def __init__(self,time,fadeTime=60):
 		"""creates the job, does nothing special"""
-		super().__init__(time,gotoSleep,(interface,fadeTime),"Go to sleep")
+		super().__init__(time,gotoSleep,(fadeTime),"Go to sleep")
