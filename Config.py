@@ -1,4 +1,6 @@
 import configparser
+import sys
+import os
 
 class Config:
 	parser=configparser.ConfigParser()
@@ -10,3 +12,13 @@ class Config:
 	alarmFadeTime=parser.getint("alarm","fadeTime",fallback=60)
 
 	sleepFadeTime=parser.getint("sleep","fadeTime",fallback=60)
+	
+	# check commandline and environment variables for host
+	if(len(sys.argv)>=2):
+		host=sys.argv[1]
+	elif(os.environ.get("MPD_HOST")!=None):
+		host=os.environ.get("MPD_HOST")
+
+	# check commandline for port
+	if(len(sys.argv)>=3):
+		port=sys.argv[2]

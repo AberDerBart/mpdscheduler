@@ -4,6 +4,7 @@ import threading
 import mpd
 import Parser
 import Config
+import socket
 
 class Interface:
 	def __init__(self):
@@ -31,6 +32,9 @@ class Interface:
 			self.client.subscribe("scheduled")
 		except ConnectionRefusedError:
 			print("Connection refused.")
+			self.stop()
+		except socket.gaierror:
+			print("Name or service not known.")
 			self.stop()
 	def stop(self):
 		"""stops the main loop and all threads started by its children"""
