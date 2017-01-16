@@ -44,6 +44,8 @@ def alarm(fadeTime,song=None):
 
 class Alarm(Job):
 	"""a job starting the playback and fading in the music at given time"""
-	def __init__(self,time,song=None,fadeTime=60):
+	def __init__(self,time,song=None,fadeTime=None):
 		"""creates the job, does nothing special"""
+		if(not fadeTime):
+			fadeTime=Config.alarmFadeTime
 		super().__init__(time,alarm,(fadeTime,song),"Alarm")

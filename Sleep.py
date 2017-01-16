@@ -28,6 +28,8 @@ def gotoSleep(fadeTime):
 	
 class SleepTimer(Job):
 	"""a job fading out the music and stopping playback at given time"""
-	def __init__(self,time,fadeTime=60):
+	def __init__(self,time,fadeTime=None):
 		"""creates the job, does nothing special"""
+		if(not fadeTime):
+			fadeTime=Config.sleepFadeTime
 		super().__init__(time,gotoSleep,(fadeTime,),"Go to sleep")
