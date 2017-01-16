@@ -30,4 +30,4 @@ class SleepTimer(Job):
 	"""a job fading out the music and stopping playback at given time"""
 	def __init__(self,time,fadeTime=60):
 		"""creates the job, does nothing special"""
-		super().__init__(time,gotoSleep,(fadeTime),"Go to sleep")
+		super().__init__(time,gotoSleep,(fadeTime,),"Go to sleep")
