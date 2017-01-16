@@ -43,13 +43,17 @@ class Interface:
 	def start(self):
 		"""starts the main loop, awaiting commands on the "scheduler" mpd channel"""
 		while(not self.quit):
-			self.client.idle()
-			messages=self.client.readmessages()
+			try:
+				self.client.idle()
+				messages=self.client.readmessages()
 
-			for msg in messages:
-				if(msg["channel"]=="scheduler"):
-					reply=self.parser.parse(msg["message"])
+				for msg in messages:
+					if(msg["channel"]=="scheduler"):
+						reply=self.parser.parse(msg["message"])
 
-					if(reply):
-						for line in reply.split("\n"):
-							self.client.sendmessage("scheduled",line)
+						if(reply):
+							for line in reply.split("\n"):
+								self.client.sendmessage("scheduled",line)
+			except mpd.ConnectionError:
+				print("Connection closed")
+				self.stop()
