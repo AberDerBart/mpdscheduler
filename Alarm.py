@@ -51,4 +51,4 @@ class Alarm(Job):
 		"""creates the job, does nothing special"""
 		if(not fadeTime):
 			fadeTime=Config.alarmFadeTime
-		super().__init__(time,alarm,(fadeTime,song),"Alarm")
+		Job.__init__(self,time,alarm,(fadeTime,song),"Alarm")

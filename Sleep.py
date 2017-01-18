@@ -32,4 +32,4 @@ class SleepTimer(Job):
 		"""creates the job, does nothing special"""
 		if(not fadeTime):
 			fadeTime=Config.sleepFadeTime
-		super().__init__(time,gotoSleep,(fadeTime,),"Go to sleep")
+		Job.__init__(self,time,gotoSleep,(fadeTime,),"Go to sleep")
