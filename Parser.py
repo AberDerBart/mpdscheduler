@@ -38,6 +38,7 @@ class Parser:
 		# cancel a job by index
 		res=parse.parse("cancel {id:d}",msg)
 		if(res):
+			self.scheduler.cancel(res["id"])
 			return None
 		# cancel a job by uuid
 		res=parse.parse("cancel_uuid {uuid}",msg)
