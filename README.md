@@ -16,6 +16,14 @@ mpdScheduler has the following dependencies:
 * python-mpd2
 * parse
 
+## Installation
+
+As this project uses git submodules, use
+
+    $ git clone --recursive [repository]
+
+to clone it.
+
 ## Usage
 
 Start the program by typing
