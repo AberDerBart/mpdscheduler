@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import mpd
-from Fade import fade
-from Scheduler import Job
-from Config import Config
+from .Fade import fade
+from .Scheduler import Job
+from .Config import Config
 
 def alarm(fadeTime,song=None):
 	"""starts playback and fades in for [fadeTime] seconds"""

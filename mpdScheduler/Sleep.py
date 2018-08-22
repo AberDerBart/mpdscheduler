@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 import mpd
-from Fade import fade
-from Scheduler import Job
-from Config import Config
+from .Fade import fade
+from .Scheduler import Job
+from .Config import Config
 
 def gotoSleep(fadeTime):
 	"""fades for [fadeTime] seconds, then stops playback and restores the volume"""

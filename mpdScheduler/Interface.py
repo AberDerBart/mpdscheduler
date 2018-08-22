@@ -2,8 +2,8 @@
 
 import threading
 import mpd
-import Parser
-import Config
+from mpdScheduler import Parser
+from mpdScheduler import Config
 import socket
 
 class Interface:

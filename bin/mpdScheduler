@@ -2,7 +2,7 @@
 import signal
 import os
 import sys
-import Interface
+from mpdScheduler import Interface
 
 def signalHandler(signum, frame):
 	print("Caught some kind of kill signal, closing...")

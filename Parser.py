@@ -1,11 +1,11 @@
 #!/bin/python
-from Sleep import SleepTimer
-import Scheduler
+from .Sleep import SleepTimer
+from mpdScheduler import Scheduler
 import time
 import parse
 import datetime
-from Alarm import Alarm
-from advParse.advParse import optParse
+from .Alarm import Alarm
+from .advParse.advParse import optParse
 
 class Parser:
 	def __init__(self):
