@@ -1,0 +1,8 @@
+[Unit]
+Description=mpdScheduler
+
+[Service]
+ExecStart=/usr/bin/mpdScheduler
+
+[Install]
+WantedBy=multi-user.target
