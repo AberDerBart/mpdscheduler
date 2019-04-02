@@ -2,7 +2,7 @@
 Description=mpdScheduler
 
 [Service]
-ExecStart=/usr/bin/mpdScheduler
+ExecStart=WHICH_MPDSCHEDULER
 
 [Install]
 WantedBy=multi-user.target
