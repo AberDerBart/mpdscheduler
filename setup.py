@@ -12,7 +12,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'python-mpd2',
-        'parse'
+        'parse',
+	'tabulate'
     ],
     scripts=['bin/mpdScheduler'],
     zip_safe=False,
