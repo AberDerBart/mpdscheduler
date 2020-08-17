@@ -10,7 +10,7 @@ def alarm(fadeTime,song=None):
 	client=mpd.MPDClient()
 	client.connect(Config.host,Config.port)
 
-	endVol=int(client.status()["volume"])
+	endVol=int(client.status().get("volume",0))
 
 	index=None
 	
