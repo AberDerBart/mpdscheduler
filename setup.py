@@ -13,7 +13,8 @@ setup(
     install_requires=[
         'python-mpd2',
         'parse',
-	'tabulate'
+	'tabulate',
+        'configparser',
     ],
     scripts=['bin/mpdScheduler'],
     zip_safe=False,
