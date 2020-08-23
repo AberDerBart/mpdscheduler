@@ -20,7 +20,7 @@ func keepAlive(mpc *mpdclient.MPDClient) *time.Ticker {
 			<-ticker.C
 			err := mpc.Ping()
 			if err != nil {
-				return err
+				log.Error().Err(err).Msg("keepAlive failed")
 			}
 		}
 	}()
