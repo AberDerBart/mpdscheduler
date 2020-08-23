@@ -1,6 +1,10 @@
 package main
 
-import "time"
+import (
+	"time"
+
+	"github.com/rs/zerolog/log"
+)
 
 type Event struct {
 	EventType string
@@ -19,6 +23,7 @@ func Schedule(f func(), t *time.Time, eventType string) *Event {
 		case <-timer.C:
 			f()
 		case <-cancel:
+			log.Debug().Msg("timer canceled")
 			return
 		}
 	}()

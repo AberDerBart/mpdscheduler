@@ -10,7 +10,7 @@ import (
 )
 
 func listEvents(mpc *mpdclient.MPDClient, events []*Event) ([]*Event, error) {
-	log.Info().Msgf("listing %d events\n", len(events))
+	log.Info().Msgf("listing %d events", len(events))
 	channels, err := mpc.Channels()
 	if err != nil {
 		return nil, err

@@ -29,7 +29,7 @@ func keepAlive(mpc *mpdclient.MPDClient) *time.Ticker {
 }
 
 func main() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "15:04:05"})
 
 	config, err := ParseConfig()
 	if err != nil {
