@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -10,6 +11,22 @@ import (
 )
 
 const schedulerChannelName = "scheduler"
+
+func keepAlive(mpc *mpdclient.MPDClient) *time.Ticker {
+	ticker := time.NewTicker(10 * time.Second)
+
+	go func() error {
+		for {
+			<-ticker.C
+			err := mpc.Ping()
+			if err != nil {
+				return err
+			}
+		}
+	}()
+
+	return ticker
+}
 
 func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
@@ -35,6 +52,8 @@ func main() {
 	}
 
 	log.Debug().Msgf("Listening on channel %s", schedulerChannelName)
+
+	keepAlive(mpc)
 
 	schedEvents := mpc.Idle("message")
 
