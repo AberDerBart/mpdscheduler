@@ -136,6 +136,10 @@ func fade(mpc *mpdclient.MPDClient, duration time.Duration, volStart, volEnd uin
 	}
 
 	interval := duration.Milliseconds() / int64(steps)
+	if interval == 0 {
+		err = setVol(mpc, volEnd)
+		return err
+	}
 	ticker := time.NewTicker(time.Duration(interval) * time.Millisecond)
 
 	for vol := uint(volStart); vol != uint(volEnd); vol = tickFn(vol) {
