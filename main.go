@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -47,8 +48,26 @@ func main() {
 
 	err = mpc.Subscribe(schedulerChannelName)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to subscribe to channel")
+		log.Error().Err(err).Msgf("failed to subscribe to channel %s", schedulerChannelName)
 		os.Exit(1)
+	}
+
+	if config.additionalChannels {
+		err = mpc.Subscribe("alarm")
+		if err != nil {
+			log.Error().Err(err).Msgf("failed to subscribe to channel alarm")
+			os.Exit(1)
+		}
+		err = mpc.Subscribe("sleep")
+		if err != nil {
+			log.Error().Err(err).Msgf("failed to subscribe to channel sleep")
+			os.Exit(1)
+		}
+		err = mpc.Subscribe("cancel")
+		if err != nil {
+			log.Error().Err(err).Msgf("failed to subscribe to channel cancel")
+			os.Exit(1)
+		}
 	}
 
 	log.Debug().Msgf("Listening on channel %s", schedulerChannelName)
@@ -68,15 +87,19 @@ func main() {
 		}
 
 		for _, msg := range msgs {
-			if msg.Channel == schedulerChannelName {
-				newEvents, err := ExecCommand(mpc, config, events, msg.Message)
-				if err != nil {
-					log.Warn().Str("cmd", msg.Message).Err(err).Msg("failed to execute command")
-				}
+			cmd := msg.Message
+			if msg.Channel != schedulerChannelName {
+				// an additional channel named after the command has been called - use the channel name as command
+				cmd = fmt.Sprintf("%s %s", msg.Channel, msg.Message)
+			}
 
-				if newEvents != nil {
-					events = newEvents
-				}
+			newEvents, err := ExecCommand(mpc, config, events, cmd)
+			if err != nil {
+				log.Warn().Str("cmd", msg.Message).Err(err).Msg("failed to execute command")
+			}
+
+			if newEvents != nil {
+				events = newEvents
 			}
 		}
 	}

@@ -14,6 +14,8 @@ type Config struct {
 
 	fadeTime time.Duration
 	maxVol   uint
+
+	additionalChannels bool
 }
 
 func envOrDefault(key, def string) string {
@@ -49,10 +51,13 @@ func ParseConfig() (*Config, error) {
 		return nil, errors.New(fmt.Sprintf("invalid volume: %d", maxVol))
 	}
 
+	additionalChannels := envOrDefault("MPDSCHEDULER_ADDITIONAL_CHANNELS", "1") == "1"
+
 	return &Config{
-		host:     envOrDefault("MPD_HOST", "localhost"),
-		port:     uint(port),
-		fadeTime: time.Duration(fadeTime) * time.Second,
-		maxVol:   uint(maxVol),
+		host:               envOrDefault("MPD_HOST", "localhost"),
+		port:               uint(port),
+		fadeTime:           time.Duration(fadeTime) * time.Second,
+		maxVol:             uint(maxVol),
+		additionalChannels: additionalChannels,
 	}, nil
 }
