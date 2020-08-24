@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -59,6 +61,33 @@ func cancelEvent(mpc *mpdclient.MPDClient, events []*Event, index int) ([]*Event
 	return append(events[:index], events[index+1:]...), nil
 }
 
+func getVol(mpc *mpdclient.MPDClient) (uint, error) {
+	resp := mpc.Cmd("status")
+	if resp.Err != nil {
+		return 0, resp.Err
+	}
+
+	for _, data := range resp.Data {
+		split := strings.Split(data, ":")
+		if len(split) != 2 {
+			log.Warn().Msgf("could not parse mpd response: %s", data)
+		}
+
+		key := strings.Trim(split[0], " \t")
+		value := strings.Trim(split[1], " \t")
+
+		if key == "volume" {
+			vol, err := strconv.Atoi(value)
+			if err != nil {
+				return 0, err
+			}
+			return uint(vol), nil
+		}
+	}
+
+	return 0, errors.New("no volume given")
+}
+
 func setVol(mpc *mpdclient.MPDClient, vol uint) error {
 	if vol > 100 {
 		return errors.New(fmt.Sprintf("invalid volume: %d", vol))
@@ -71,7 +100,6 @@ var (
 	fadeMutex sync.Mutex
 )
 
-// TODO: drop volStart, start at current volume
 func fade(mpc *mpdclient.MPDClient, duration time.Duration, volStart, volEnd uint) error {
 	fadeMutex.Lock()
 	defer fadeMutex.Unlock()
@@ -132,14 +160,21 @@ func scheduleSleep(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*
 	sleepEvent := Schedule(
 		func() error {
 			log.Info().Msg("going to sleep")
-			err := fade(mpc, 30*time.Second, 100, 0)
-			if err != nil {
-				log.Error().Err(err).Msg("failed to fade")
-				return err
+			vol, err := getVol(mpc)
+			if err == nil {
+				err := fade(mpc, 30*time.Second, vol, 0)
+				if err != nil {
+					log.Error().Err(err).Msg("failed to fade")
+					return err
+				}
+			} else {
+				log.Warn().Err(err).Msg("failed to get volume, stopping playback")
 			}
-			resp := mpc.Cmd("stop")
+
+			log.Debug().Msg("pausing playback")
+			resp := mpc.Cmd("pause")
 			if resp.Err != nil {
-				log.Error().Err(resp.Err).Msg("failed to play")
+				log.Error().Err(resp.Err).Msg("failed to pause")
 				return resp.Err
 			}
 			return nil
