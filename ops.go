@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math"
+	"sync"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -57,12 +59,90 @@ func cancelEvent(mpc *mpdclient.MPDClient, events []*Event, index int) ([]*Event
 	return append(events[:index], events[index+1:]...), nil
 }
 
+func setVol(mpc *mpdclient.MPDClient, vol uint) error {
+	if vol > 100 {
+		return errors.New(fmt.Sprintf("invalid volume: %d", vol))
+	}
+	resp := mpc.Cmd(fmt.Sprintf("setvol %d", vol))
+	return resp.Err
+}
+
+var (
+	fadeMutex sync.Mutex
+)
+
+// TODO: drop volStart, start at current volume
+func fade(mpc *mpdclient.MPDClient, duration time.Duration, volStart, volEnd uint) error {
+	fadeMutex.Lock()
+	defer fadeMutex.Unlock()
+
+	if volEnd > 100 {
+		return errors.New(fmt.Sprintf("invalid volume: %d", volEnd))
+	}
+
+	if volEnd > volStart {
+		log.Debug().Msgf("fading in from %d to %d, duration %.0fs", volStart, volEnd, math.Ceil(duration.Seconds()))
+	} else {
+		log.Debug().Msgf("fading out from %d to %d, duration %.0fs", volStart, volEnd, math.Ceil(duration.Seconds()))
+	}
+	err := setVol(mpc, volStart)
+	if err != nil {
+		return err
+	}
+
+	tickFn := func(v uint) uint {
+		return v + 1
+	}
+	if volStart > volEnd {
+		tickFn = func(v uint) uint {
+			return v - 1
+		}
+	}
+
+	steps := int(volEnd) - int(volStart)
+	if steps < 0 {
+		steps = -steps
+	}
+	if steps == 0 {
+		return nil
+	}
+
+	interval := duration.Milliseconds() / int64(steps)
+	ticker := time.NewTicker(time.Duration(interval) * time.Millisecond)
+
+	for vol := uint(volStart); vol != uint(volEnd); vol = tickFn(vol) {
+		<-ticker.C
+		err = setVol(mpc, vol)
+	}
+
+	ticker.Stop()
+
+	err = setVol(mpc, volEnd)
+	if err != nil {
+		return err
+	}
+
+	log.Debug().Msg("fade finished")
+
+	return nil
+}
+
 func scheduleSleep(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*Event, error) {
 	log.Info().Msgf("scheduling sleep for %v", t)
 	sleepEvent := Schedule(
-		func() {
+		func() error {
 			log.Info().Msg("going to sleep")
-			mpc.Cmd("stop")
+			err := fade(mpc, 30*time.Second, 100, 0)
+			if err != nil {
+				log.Error().Err(err).Msg("failed to fade")
+				return err
+			}
+			resp := mpc.Cmd("stop")
+			if resp.Err != nil {
+				log.Error().Err(resp.Err).Msg("failed to play")
+				return resp.Err
+			}
+			return nil
 		},
 		t,
 		"sleep",
@@ -73,9 +153,24 @@ func scheduleSleep(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*
 func scheduleAlarm(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*Event, error) {
 	log.Info().Msgf("scheduling alarm for %v", t)
 	sleepEvent := Schedule(
-		func() {
+		func() error {
 			log.Info().Msg("alarm")
-			mpc.Cmd("play")
+			err := setVol(mpc, 0)
+			if err != nil {
+				log.Error().Err(err).Msg("failed to set volume")
+				return err
+			}
+			resp := mpc.Cmd("play")
+			if resp.Err != nil {
+				log.Error().Err(resp.Err).Msg("failed to play")
+				return resp.Err
+			}
+			err = fade(mpc, 30*time.Second, 0, 100)
+			if err != nil {
+				log.Error().Err(err).Msg("failed to fade")
+				return err
+			}
+			return nil
 		},
 		t,
 		"alarm",

@@ -13,7 +13,7 @@ type Event struct {
 	cancel    chan struct{}
 }
 
-func Schedule(f func(), t *time.Time, eventType string) *Event {
+func Schedule(f func() error, t *time.Time, eventType string) *Event {
 
 	timer := time.NewTimer(t.Sub(time.Now()))
 	cancel := make(chan struct{})
