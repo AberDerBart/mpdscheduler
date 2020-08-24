@@ -79,7 +79,7 @@ func newArgumentCountError(got, want int) error {
 	return errors.New(fmt.Sprintf("invalid number of arguemnts: got %d, expected %d", got, want))
 }
 
-func ExecCommand(mpc *mpdclient.MPDClient, events []*Event, cmd string) ([]*Event, error) {
+func ExecCommand(mpc *mpdclient.MPDClient, config *Config, events []*Event, cmd string) ([]*Event, error) {
 	split := regexp.MustCompile(`\s+`).Split(cmd, -1)
 
 	if len(split) < 1 {
@@ -96,7 +96,7 @@ func ExecCommand(mpc *mpdclient.MPDClient, events []*Event, cmd string) ([]*Even
 			return nil, err
 		}
 
-		return scheduleAlarm(mpc, events, t)
+		return scheduleAlarm(mpc, config, events, t)
 	}
 
 	if split[0] == "sleep" {
@@ -109,7 +109,7 @@ func ExecCommand(mpc *mpdclient.MPDClient, events []*Event, cmd string) ([]*Even
 			return nil, err
 		}
 
-		return scheduleSleep(mpc, events, t)
+		return scheduleSleep(mpc, config, events, t)
 	}
 
 	if split[0] == "list" {
@@ -117,7 +117,7 @@ func ExecCommand(mpc *mpdclient.MPDClient, events []*Event, cmd string) ([]*Even
 			return nil, newArgumentCountError(len(split), 1)
 		}
 
-		return listEvents(mpc, events)
+		return listEvents(mpc, config, events)
 	}
 
 	if split[0] == "cancel" {
@@ -129,7 +129,7 @@ func ExecCommand(mpc *mpdclient.MPDClient, events []*Event, cmd string) ([]*Even
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("could not parse index: %s", split[1]))
 		}
-		return cancelEvent(mpc, events, index)
+		return cancelEvent(mpc, config, events, index)
 	}
 
 	return events, nil

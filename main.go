@@ -69,7 +69,7 @@ func main() {
 
 		for _, msg := range msgs {
 			if msg.Channel == schedulerChannelName {
-				newEvents, err := ExecCommand(mpc, events, msg.Message)
+				newEvents, err := ExecCommand(mpc, config, events, msg.Message)
 				if err != nil {
 					log.Warn().Str("cmd", msg.Message).Err(err).Msg("failed to execute command")
 				}

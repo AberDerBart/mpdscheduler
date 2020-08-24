@@ -13,7 +13,7 @@ import (
 	"github.com/vincent-petithory/mpdclient"
 )
 
-func listEvents(mpc *mpdclient.MPDClient, events []*Event) ([]*Event, error) {
+func listEvents(mpc *mpdclient.MPDClient, config *Config, events []*Event) ([]*Event, error) {
 	log.Info().Msgf("listing %d events", len(events))
 	channels, err := mpc.Channels()
 	if err != nil {
@@ -47,7 +47,7 @@ func listEvents(mpc *mpdclient.MPDClient, events []*Event) ([]*Event, error) {
 	return events, nil
 }
 
-func cancelEvent(mpc *mpdclient.MPDClient, events []*Event, index int) ([]*Event, error) {
+func cancelEvent(mpc *mpdclient.MPDClient, config *Config, events []*Event, index int) ([]*Event, error) {
 	if index >= len(events) {
 		return nil, errors.New(fmt.Sprintf("invalid index: %d", index))
 	}
@@ -155,14 +155,14 @@ func fade(mpc *mpdclient.MPDClient, duration time.Duration, volStart, volEnd uin
 	return nil
 }
 
-func scheduleSleep(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*Event, error) {
+func scheduleSleep(mpc *mpdclient.MPDClient, config *Config, events []*Event, t *time.Time) ([]*Event, error) {
 	log.Info().Msgf("scheduling sleep for %v", t)
 	sleepEvent := Schedule(
 		func() error {
 			log.Info().Msg("going to sleep")
 			vol, err := getVol(mpc)
 			if err == nil {
-				err := fade(mpc, 30*time.Second, vol, 0)
+				err := fade(mpc, config.fadeTime, vol, 0)
 				if err != nil {
 					log.Error().Err(err).Msg("failed to fade")
 					return err
@@ -194,7 +194,7 @@ func scheduleSleep(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*
 	return append(events, sleepEvent), nil
 }
 
-func scheduleAlarm(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*Event, error) {
+func scheduleAlarm(mpc *mpdclient.MPDClient, config *Config, events []*Event, t *time.Time) ([]*Event, error) {
 	log.Info().Msgf("scheduling alarm for %v", t)
 	sleepEvent := Schedule(
 		func() error {
@@ -209,7 +209,7 @@ func scheduleAlarm(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*
 				log.Error().Err(resp.Err).Msg("failed to play")
 				return resp.Err
 			}
-			err = fade(mpc, 30*time.Second, 0, 100)
+			err = fade(mpc, config.fadeTime, 0, config.maxVol)
 			if err != nil {
 				log.Error().Err(err).Msg("failed to fade")
 				return err

@@ -5,11 +5,15 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Config struct {
 	host string
 	port uint
+
+	fadeTime time.Duration
+	maxVol   uint
 }
 
 func envOrDefault(key, def string) string {
@@ -29,8 +33,26 @@ func ParseConfig() (*Config, error) {
 		return nil, errors.New(fmt.Sprintf("invalid port: %d", port))
 	}
 
+	fadeTime, err := strconv.Atoi(envOrDefault("MPDSCHEDULER_FADE_TIME", "30"))
+	if err != nil {
+		return nil, err
+	}
+	if fadeTime < 0 {
+		return nil, errors.New(fmt.Sprintf("invalid fade time: %d", fadeTime))
+	}
+
+	maxVol, err := strconv.Atoi(envOrDefault("MPDSCHEDULER_MAX_VOLUME", "100"))
+	if err != nil {
+		return nil, err
+	}
+	if maxVol < 0 || maxVol > 65536 {
+		return nil, errors.New(fmt.Sprintf("invalid volume: %d", maxVol))
+	}
+
 	return &Config{
-		host: envOrDefault("MPD_HOST", "localhost"),
-		port: uint(port),
+		host:     envOrDefault("MPD_HOST", "localhost"),
+		port:     uint(port),
+		fadeTime: time.Duration(fadeTime) * time.Second,
+		maxVol:   uint(maxVol),
 	}, nil
 }
