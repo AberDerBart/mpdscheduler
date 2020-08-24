@@ -177,6 +177,15 @@ func scheduleSleep(mpc *mpdclient.MPDClient, events []*Event, t *time.Time) ([]*
 				log.Error().Err(resp.Err).Msg("failed to pause")
 				return resp.Err
 			}
+
+			if vol > 0 {
+				log.Debug().Msgf("restoring volume to %d", vol)
+				err = setVol(mpc, vol)
+				if err != nil {
+					log.Error().Err(err).Msg("failed to set volume")
+					return err
+				}
+			}
 			return nil
 		},
 		t,
