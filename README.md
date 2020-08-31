@@ -1,6 +1,6 @@
-# mpdScheduler
+# mpdscheduler
 
-mpdScheduler is a client for mpd that adds functionality. This is done via the mpd channel interface.
+mpdscheduler is a client for mpd that adds functionality. This is done via the mpd channel interface.
 
 ## Supported features
 
@@ -19,7 +19,7 @@ Compile using the go compiler and make like this
 
 Start the program by typing
 
-    $ ./mpdScheduler
+    $ ./mpdscheduler
 
 By setting the `MPD_HOST` and `MPD_PORT` environment variables, host and port of the corresponding mpd server can be configured.
 The fade time (in seconds) can be set with the `MPDSCHEDULER_FADE_TIME` environment variable.

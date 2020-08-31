@@ -1,4 +1,4 @@
-module github.com/AberDerBart/mpdScheduler
+module github.com/AberDerBart/mpdscheduler
 
 go 1.14
 

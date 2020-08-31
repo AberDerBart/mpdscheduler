@@ -1,2 +1,2 @@
-mpdScheduler: *.go
+mpdscheduler: *.go
 	go build
